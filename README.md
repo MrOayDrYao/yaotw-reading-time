@@ -24,16 +24,11 @@ On any text field (Heading, Text Editor, Icon Box, Post Info and so on), click t
 
 Works inside a Single Post template and inside a Loop Item: the tag resolves the post currently being iterated.
 
-Available controls:
+The tag exposes a single setting, **Mots par minute** (default 200, the average French reading speed). The label is in French, matching the editor language of the sites this plugin was written for. Change the `esc_html__()` strings, or load a translation against the `yaotw-reading-time` text domain.
 
-| Control | Default | Purpose |
-|---|---|---|
-| Mots par minute | 200 | Reading speed used for the calculation |
-| Avant | empty | Prefix, e.g. `Lecture : ` |
-| Après | ` min de lecture` | Suffix |
-| Valeur de repli | empty | Shown when the content is empty |
+Prefix, suffix and fallback are **not** re-implemented: use Elementor's own **Advanced** section on the tag (Before / After / Fallback). Declaring controls with those IDs collides with `\Elementor\Core\DynamicTags\Tag`, which applies them around the tag output on its own, and the text ends up printed twice.
 
-Labels are in French, matching the editor language of the sites this plugin was written for. Change the `esc_html__()` strings, or load a translation against the `yaotw-reading-time` text domain.
+The tag renders the bare number, so `Before: "Reading time: "` and `After: " min"` give `Reading time: 12 min`. When the post has no countable content the tag renders nothing, which lets Elementor fall back to the Fallback value.
 
 ### Shortcode
 

@@ -3,7 +3,7 @@
  * Plugin Name:       YAOTW Reading Time
  * Plugin URI:        https://github.com/yaotw/yaotw-reading-time
  * Description:       Ajoute un Dynamic Tag « Temps de lecture » à Elementor, plus un shortcode [yaotw_reading_time]. Must-use plugin, aucune activation nécessaire.
- * Version:           0.9.1
+ * Version:           0.9.2
  * Requires at least: 6.0
  * Requires PHP:      7.4
  * Author:            YAOTW
@@ -18,7 +18,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
 
-define( 'YAOTW_READING_TIME_VERSION', '0.9.0' );
+define( 'YAOTW_READING_TIME_VERSION', '0.9.1' );
 define( 'YAOTW_READING_TIME_META_KEY', '_yaotw_reading_time_words' );
 
 /**
@@ -235,6 +235,12 @@ function yaotw_reading_time_register_tag( $dynamic_tags_manager ) {
 			/**
 			 * Contrôles du tag.
 			 *
+			 * Ne déclarer ici ni « before », ni « after », ni « fallback » :
+			 * ces IDs sont déjà pris par la section Avancé de
+			 * \Elementor\Core\DynamicTags\Tag, qui les applique elle-même
+			 * autour de la sortie de render(). Les redéclarer produit un
+			 * doublon à l'affichage.
+			 *
 			 * @return void
 			 */
 			protected function register_controls() {
@@ -250,58 +256,27 @@ function yaotw_reading_time_register_tag( $dynamic_tags_manager ) {
 						'description' => esc_html__( 'Moyenne de lecture en français : 200.', 'yaotw-reading-time' ),
 					)
 				);
-
-				$this->add_control(
-					'before',
-					array(
-						'label'       => esc_html__( 'Avant', 'yaotw-reading-time' ),
-						'type'        => \Elementor\Controls_Manager::TEXT,
-						'default'     => '',
-						'placeholder' => esc_html__( 'Lecture : ', 'yaotw-reading-time' ),
-					)
-				);
-
-				$this->add_control(
-					'after',
-					array(
-						'label'   => esc_html__( 'Après', 'yaotw-reading-time' ),
-						'type'    => \Elementor\Controls_Manager::TEXT,
-						'default' => ' min de lecture',
-					)
-				);
-
-				$this->add_control(
-					'fallback',
-					array(
-						'label'       => esc_html__( 'Valeur de repli', 'yaotw-reading-time' ),
-						'type'        => \Elementor\Controls_Manager::TEXT,
-						'default'     => '',
-						'description' => esc_html__( 'Affiché si le contenu est vide.', 'yaotw-reading-time' ),
-					)
-				);
 			}
 
 			/**
 			 * Rendu du tag.
+			 *
+			 * Sort la valeur nue. Le préfixe, le suffixe et la valeur de repli
+			 * sont gérés par la section Avancé native d'Elementor.
 			 *
 			 * @return void
 			 */
 			public function render() {
 				$settings = $this->get_settings_for_display();
 
-				$wpm      = isset( $settings['wpm'] ) ? absint( $settings['wpm'] ) : 200;
-				$before   = isset( $settings['before'] ) ? $settings['before'] : '';
-				$after    = isset( $settings['after'] ) ? $settings['after'] : '';
-				$fallback = isset( $settings['fallback'] ) ? $settings['fallback'] : '';
-
+				$wpm     = isset( $settings['wpm'] ) ? absint( $settings['wpm'] ) : 200;
 				$minutes = yaotw_reading_time_get( null, $wpm );
 
 				if ( ! $minutes ) {
-					echo esc_html( $fallback );
 					return;
 				}
 
-				echo esc_html( $before . $minutes . $after );
+				echo esc_html( $minutes );
 			}
 		}
 	}
