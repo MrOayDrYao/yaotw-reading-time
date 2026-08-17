@@ -3,7 +3,7 @@
  * Plugin Name:       YAOTW Reading Time
  * Plugin URI:        https://github.com/yaotw/yaotw-reading-time
  * Description:       Ajoute un Dynamic Tag « Temps de lecture » à Elementor, plus un shortcode [yaotw_reading_time]. Must-use plugin, aucune activation nécessaire.
- * Version:           0.9.0
+ * Version:           0.9.1
  * Requires at least: 6.0
  * Requires PHP:      7.4
  * Author:            YAOTW
